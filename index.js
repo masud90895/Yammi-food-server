@@ -60,8 +60,8 @@ async function run() {
     });
 
     app.get("/review", async (req, res) => {
-      const review = await reviewCollection.find({}).toArray();
-
+      const query= req.query.name
+      const review = await reviewCollection.find({category: query}).toArray();
       res.send({
         success: true,
         data: review,
