@@ -43,7 +43,6 @@ async function run() {
     app.get("/foods/:id", async (req, res) => {
       const id = req.params.id;
       const findFood = await foodCollection.findOne({ _id: ObjectId(id) });
-      console.log(findFood);
       res.send({
         success: true,
         data: findFood,
@@ -62,6 +61,7 @@ async function run() {
 
     app.get("/review", async (req, res) => {
       const review = await reviewCollection.find({}).toArray();
+
       res.send({
         success: true,
         data: review,
