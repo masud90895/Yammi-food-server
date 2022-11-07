@@ -60,22 +60,34 @@ async function run() {
     });
 
     app.get("/review", async (req, res) => {
-      const query= req.query.name
-      const review = await reviewCollection.find({category: query}).toArray();
+      const query = req.query.name;
+      const review = await reviewCollection.find({ category: query }).toArray();
       res.send({
         success: true,
         data: review,
       });
     });
 
-
     app.get("/myReview", async (req, res) => {
-      const query= req?.query?.email
-      const review = await reviewCollection.find({email: query}).toArray();
+      const query = req?.query?.email;
+      const review = await reviewCollection.find({ email: query }).toArray();
       res.send({
         success: true,
         data: review,
       });
+    });
+
+    //  handle delete
+
+    app.delete("/review:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await reviewCollection.deleteOne({ _id: ObjectId(id) });
+      if (result.deletedCount) {
+        res.send({
+          success: true,
+          data: result,
+        });
+      }
     });
   } catch (error) {
     console.log(error.name, error.message);
