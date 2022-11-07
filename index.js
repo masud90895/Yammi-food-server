@@ -24,6 +24,7 @@ async function run() {
   try {
     await client.connect();
     const foodCollection = client.db("foodCollection").collection("food");
+    const reviewCollection = client.db("foodCollection").collection("review");
 
     app.get("/", async (req, res) => {
       const foods = await foodCollection.find({}).limit(3).toArray();
@@ -40,12 +41,30 @@ async function run() {
       });
     });
     app.get("/foods/:id", async (req, res) => {
-      const id= req.params.id;
-      const findFood = await foodCollection.findOne({_id:ObjectId(id)});
+      const id = req.params.id;
+      const findFood = await foodCollection.findOne({ _id: ObjectId(id) });
       console.log(findFood);
       res.send({
         success: true,
         data: findFood,
+      });
+    });
+
+    app.post("/review", async (req, res) => {
+      const result = await reviewCollection.insertOne(req.body);
+      if (result.insertedId) {
+        res.send({
+          success: true,
+          data: result,
+        });
+      }
+    });
+
+    app.get("/review", async (req, res) => {
+      const review = await reviewCollection.find({}).toArray();
+      res.send({
+        success: true,
+        data: review,
       });
     });
   } catch (error) {
