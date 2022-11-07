@@ -67,6 +67,16 @@ async function run() {
         data: review,
       });
     });
+
+
+    app.get("/myReview", async (req, res) => {
+      const query= req?.query?.email
+      const review = await reviewCollection.find({email: query}).toArray();
+      res.send({
+        success: true,
+        data: review,
+      });
+    });
   } catch (error) {
     console.log(error.name, error.message);
   }
