@@ -89,6 +89,18 @@ async function run() {
         });
       }
     });
+
+    app.post("/services", async (req, res)=>{
+      const result= await foodCollection.insertOne(req.body)
+      console.log(result);
+      if (result.insertedId) {
+        res.send({
+          success: true,
+          message: `successfully created the ${req.body.name} with id ${result.insertedId}}`,
+        });
+      }
+    });
+
   } catch (error) {
     console.log(error.name, error.message);
   }
