@@ -8,6 +8,7 @@ const port = process.env.PORT || 5000;
 
 // used Middleware
 app.use(cors());
+const jwt = require('jsonwebtoken');
 // backend to client data sent
 app.use(express.json());
 
@@ -18,6 +19,25 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
+
+// JWT token start
+function verifyJWT(req, res, next){
+  const authHeader = req.headers.authorization;
+
+  if(!authHeader){
+      return res.status(401).send({message: 'unauthorized access'});
+  }
+  const token = authHeader.split(' ')[1];
+
+  jwt.verify(token, process.env.TOKEN, function(err, decoded){
+      if(err){
+          return res.status(403).send({message: 'Forbidden access'});
+      }
+      req.decoded = decoded;
+      next();
+  })
+}
 
 // Create a async fucntion to all others activity
 async function run() {
@@ -68,7 +88,7 @@ async function run() {
       });
     });
 
-    app.get("/myReview", async (req, res) => {
+    app.get("/myReview",verifyJWT, async (req, res) => {
       const query = req?.query?.email;
       const review = await reviewCollection.find({ email: query }).toArray();
       res.send({
@@ -100,6 +120,13 @@ async function run() {
         });
       }
     });
+
+    // jwt 
+    app.post('/jwt', (req, res) =>{
+      const user = req.body;
+      const token = jwt.sign(user, process.env.TOKEN, { expiresIn: '1d'})
+      res.send({token})
+  })
 
   } catch (error) {
     console.log(error.name, error.message);
