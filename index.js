@@ -128,6 +128,28 @@ async function run() {
       res.send({token})
   })
 
+  app.get("/myReview/:id", async (req, res) => {
+    const id = req.params.id;
+    const result = await reviewCollection.findOne({ _id: ObjectId(id) });
+    console.log(result);
+      res.send({
+        success: true,
+        data: result,
+      });
+   
+  })
+
+  app.put("/editReview/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await reviewCollection.updateOne({_id: ObjectId(id)},{$set: req.body})
+      if (result.matchedCount) {
+        res.send({
+          success: true,
+          data: result,
+        })};
+  })
+
+
   } catch (error) {
     console.log(error.name, error.message);
   }
