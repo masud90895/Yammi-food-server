@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 app.use(express.json());
 
 // Connect With MongoDb Database
-const uri = `mongodb+srv://masud:l7rTO3FiCmL2snFV@cluster0.2vi6qur.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.2vi6qur.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
